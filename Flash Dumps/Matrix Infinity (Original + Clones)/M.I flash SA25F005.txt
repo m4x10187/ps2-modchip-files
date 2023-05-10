@@ -1,0 +1,5 @@
+Flash I.C. type: SA25F005
+
+M.I. Firmware version 1.93 (orange dot)
+
+MD-5: 5EE97355B563B11C8B52C54129501570
