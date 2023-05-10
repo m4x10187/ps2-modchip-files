@@ -1,0 +1,51 @@
+Initial Requirements
+
+These are the initial requirements to manufacture Messiah modchips:
+
+1) Messiah bitstream file
+2) Messiah PCB Gerber files and then subsequent manufacture of Messiah PCB's.
+3) Messiah components which consist of the following on each individual Messiah:
+
+A) 1 X Actel Pro-asic 050 FBGA 144 Asic
+B) 8 X 1k ohm resistor
+C) 2 X S2M (1N4007 equiv) Power diode
+D) 2 X Tantalum Bead Capacitor
+E) 1 X 4mhz standard spec. oscillator
+
+Once you have all of the above (values and manufacturers given shortly), you are on the way to being able to produce a messiah product.
+
+What is also required is a way of programming the FBGA 144 Asic device.
+This can be done using an Actel Silicon Sculpture programmer using FBG 144 programming adaptor heads, or using a Flash Pro programmer which also supports Actel devices, and similarly using an FBGA 144 head.
+
+It is NOT possible to solder these components to a Messiah PCB by hand, and it must be done in a factory surface mount assembly environment, the FBG 144 devices are 'oven' soldered, this means that they are heated until the small solder balls beneath the chip melt and form the soldered contact with the PCB. Special equipment is required for the process and can only be done where sm assembly is carried out, usually at a PCB design and manufacture factory. (Many small companies provide this simple service).
+
+More about programming:
+
+There are two options with programming Messiah's. The PCB's have a row of programming connections on them, and it is possible to slot a Messiah into a suitable adaptor and program the FBGA 144 on-board the Messiah PCB. In this way, its simply a case of manufacturing Messiah's, and then taking the time to program them afterwards. The other method is to program the bare chip using the programmer, and then assemble onto the PCB's.
+
+The recommended method is to program afterwards, the reason for this is that Asics are shipped in environment protected packaging, and should be removed and soldered to their targets in the minum time available as problems such as dirt, condensation and many other factors can affect the chips ability to be successfully ovened to the PCB. Obviously, if they are removed from packaging, handled for programming, re-packaged and then sent for assembly, the process may induce problems that affect manufacturing success rates.
+
+Those that have come across Messiah's regularly, especially fitters know that there are three small solder points that must be made before installing a Messiah. These solder points are simply 'bridges' that change the Messiah from its ready to program state, to its ready to use state, whilst these solder bridges remain open circuit, the Messiah is only able to be programmed and not used, whilst they are shorted, the Messiah becomes ready to use and provide its functionality.
+
+
+Messiah Bitstream:
+The bitstream is the file required to be programmed into the FBGA 144 device, it configures (programs) the ASIC and holds all the data for allowing the asic to function as required.
+Most Asic devices do not allow the bistreams to be read protected, but the Actel FBGA 144 device does. It actually has two forms of protection, one is a blown fuse within the device, the other is a password protected access to the bitstream within and can only be accessed using the correct software with the correct password that matches what is programmed.
+
+As can be seen, this presents a relatively secure device, and unlike most other Asics such as Xilinx, the bistream is well protected against hacking.
+
+Actel's protection is further enhanced in the Messiah 2 device, this is called an Antifuse device and works in the following manner:
+
+When the special software and programmer completes programming, a random set of fuses is blown throughout the device securing the code. There is no read option with this device, it is a once-only programmable device unlike the Pro-asic which can be re-programmed many thousands of times.
+
+The chances of the Messiah 2 code being hacked is much less than the Messiah code, antifuse technology is almost completely hackerproof due to its randomness in blowing internal fuses.
+
+It is also reported that the Antifuse wafer is designed side-on across the device, this has the effect of those trying microscopy to decap and repair the fuses will not find wafers across the design , instead will find themselves looking side-on to the wafers which means that the task is a million times more difficult as cutting through wafers on a horizontal thin plane represents some immense difficulty.
+
+
+OK...
+so on this first post, we can attach the PCB Gerber files for Messiah, those that have software capable of reading this will obviously like what they see. Suddenly, all those clone copies out there which always had noticeable differences in the PCB design will be up against original Messiah design files, although we doubt it will be long before they take up using the original (but does it matter anymore is the question ?)
+
+This Gerber set provides a layout for the production of a sheet of 52 Messiahs. Imagine this to be a panel of printed circuit boards, all nicely laid out in rows.
+
+The file is attached, on this first stage, its best for questions to be asked before moving on.

@@ -1,0 +1,71 @@
+
+                         
+   _ ______________________________________________________________________ _
+      
+                             NEO v2.2 PS2 MODCHIP
+   _ ______________________________________________________________________ _
+                                       
+                                       
+       fILE TYPE  : 16 Bit Intel HEX           rELEASE DATE : 06-22-2001
+       sYSTEM     : PS2                        sIZE         : Small ZIP
+       tYPE       : 12c508 PIC                 rEGIONS      : PAL/USA/JAP
+       sUPPLIER   : NEO TECHNOLOGIES           mAKER        : Mr T
+        
+        
+   _ ______________________________________________________________________ _
+                     __ _
+         nOTES .... /_/\__ __ _
+                    _/
+         NEO 2, the worlds most famous PS2 modchip has had a bit of a spring
+         clean :)
+         
+         New Features:
+         
+         >> No capacitor needed anymore
+         >> Enhanced SCE management code
+         >> PSX Originals & Backups boot automatically
+         >>  - no need to hold reset on either
+         >> CD Brake for the EA METHOD 
+         >>  - OPTIONAL WIRE - Useful for v4 PS2's using AR2/GS2 v1.4+
+         >> All timing issues resolved
+         >>  - PSX and PS2 games boot reliably time and time again
+         >> Extra time allowed for EA METHOD
+         >>  - Tray stays out for 6 seconds instead of 4
+         >> The whole mod is still on a 12c508
+         >> Same points as NEO2 for ease of upgrade
+         
+         As a thankyou for all the support (inc Flames) over the past
+         6 months we decided to make the code public (for non commercial use
+         of course - but i'm sure there will be "Official NEO Distributors"
+         cropping up all over the world within a week ;)
+         
+        chip=12c508 or 12c508a
+	osc =intrc
+	wdt =off
+	cpo =on or off
+	mclre=int
+         
+         Simply wire up same as NEO2 - you do not need a capacitor anymore.
+         Make sure you v4 owners changed the PIN2 to the new point which was
+         given out in May. 
+         For the CD break simple connect another wire to PIN3 on the 12c508
+         and solder to PIN18 on the BA666 Chip 
+         
+         
+         In case any of you are intersted in the specs of the upcoming NEO3 mod
+         Take a look....
+         
+         PSX ORIGINALS
+         PSX IMPORT ORIGINALS (100% ROM PATCH NO SWAP)
+         PSX HK SILVERS (100% ROM PATCH NO SWAP)
+         PSX BACKUPS (100% ROM PATCH NO SWAP)
+         PSX IMPORT BACKUPS (100% ROM PATCH NO SWAP)
+         PS2 ORIGINALS
+         PS2 BACKUPS (FLAWLESS BOOT - INTELLIGENT CONTROL)
+         PS2 DVD RIPS (FLAWLESS BOOT - INTELLIGENT CONTROL)
+         PS2 "EA METHOD" TITLES (NEW EA INTELLIGENT MODE)
+         PS2 "EA METHOD" TITLES (NEW CD BRAKE CONTROL)
+         DVD MOVIES (MULTIREGION BOTH NTSC & PAL INC RCE PROTECTION - EURO ONLY)
+         MACROVISION COPY PROTECTION (100% REMOVED)
+                 
+                             

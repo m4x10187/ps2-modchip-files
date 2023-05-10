@@ -1,0 +1,49 @@
+If you are a CURRENT Modchip.com chip user then follow this:
+
+Modchip.com PS2 FINAL mod-chip:
+-------------------------------
+PIN #1- to PIN #1 location of your PS2 model's diagram
+PIN #2- to PIN #2 location of your PS2 model's diagram
+PIN #3- to PIN #3 location of your PS2 model's diagram
+PIN #4- to PIN #4 location of your PS2 model's diagram
+PIN #5- not used anymore!
+PIN #6- to PIN #6 location of your PS2 model's diagram
+PIN #7- to PIN #7 location of your PS2 model's diagram
+PIN #8- to PIN #8 location of your PS2 model's diagram
+
+Add-On mod-chip:
+----------------
+PIN #1- to PIN #1 of Modchip.com FINAL mod-chip
+PIN #2- to PIN #2 of Modchip.com FINAL mod-chip
+PIN #3- to PIN #3 of Modchip.com FINAL mod-chip
+PIN #4- to PIN #4 of Modchip.com FINAL mod-chip
+PIN #5- to PIN #5 location on PS2 board itself
+PIN #6- not used!
+PIN #7- to PIN #23 of BA6664FM chip on PS2 board itself
+PIN #8- to PIN #8 of Modchip.com FINAL mod-chip
+
+======================================================
+If you are a CURRENT NEO 2 chip user then follow this:
+======================================================
+
+NEO 2 PS2 mod-chip:
+-------------------
+PIN #1- to PIN #1 location of your PS2 model's diagram
+PIN #2- to PIN #2 location of your PS2 model's diagram
+PIN #3- not used anymore!
+PIN #4- to PIN #4 location of your PS2 model's diagram
+PIN #5- to PIN #5 location of your PS2 model's diagram
+PIN #6- to PIN #6 location of your PS2 model's diagram
+PIN #7- to PIN #7 location of your PS2 model's diagram
+PIN #8- to PIN #8 location of your PS2 model's diagram
+
+Add-On mod-chip:
+----------------
+PIN #1- to PIN #1 of NEO 2 mod-chip
+PIN #2- to PIN #6 of NEO 2 mod-chip
+PIN #3- to PIN #5 of NEO 2 mod-chip
+PIN #4- to PIN #4 of NEO 2 mod-chip
+PIN #5- to PIN #3 location on PS2 board itself
+PIN #6- not used!
+PIN #7- to PIN #23 of BA6664FM chip on PS2 board itself
+PIN #8- to PIN #8 of NEO 2 mod-chip

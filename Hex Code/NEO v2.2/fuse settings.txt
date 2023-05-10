@@ -1,0 +1,5 @@
+chip=12c508
+osc =intrc
+wdt =off
+cpo =on or off
+mclre=int

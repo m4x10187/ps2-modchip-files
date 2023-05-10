@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name ComsoftFixV4_Finished_Draft_Labeled_Complete)(type KiCad)(uri "$(KIPRJMOD)/ComsoftFixV4_Finished_Draft_Labeled_Complete.pretty")(options "")(descr ""))
+)

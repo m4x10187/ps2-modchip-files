@@ -1,0 +1,39 @@
+,------------------------------------------------------------------------------,
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;|
+,------------------------------------------------------------------------------'
+| ;          NEO Version 1.5 PSX Hex Code For US / PAL Playstation 2         ; |
+) - -- --------------------------------,--------------------------------- -- - :
+| | Coded by    : Mr T                 / Release date : 6th February 2001    | |
+| | Packaged by : Raptor               | Fuses : MCLR OFF / INT OSC / WD OFF / ;
+| / Released by : Playstationmods.com  . PIC Type : 12c508                   | |
+) - -- --------------------------------'--------------------------------- -- - (
+| ::::::::::::::::::::::::::::::::::::::::: ::: :: : r e l e a s e . n o t e s |
+) - -- ------------------------------------------------------------------ -- - (
+|                                                                              |
+| This mod was designed for those who want to play PSX copies on their PS2     |
+| without it having any detrimental effects on the performance of the machine. |
+|                                                                              |
+| Instructions for NEO 1.5 Modchip (US SCPH 30001)                             |
+| ##############################################                               |
+| Turn on the machine                                                          |
+|                                                                              |
+| PSX Copies and PS2 Originals will auto boot                                  |
+|                                                                              | 
+| Use Action Replay 2 to boot PS2 Backups                                      |
+| Boot with CD1, Select WITHOUT CODES, Insert Backup - PLAY !                  |
+|                                                                              | 
+| Instructions for NEO 1.5 Modchip (PAL SCPH 30002/3/4)                        |
+| ###################################################                          |
+|                                                                              |
+| PSX Copies and PS2 Originals will auto boot                                  |
+| Import PSX Copies: Patch the ISO of game with the Patch-It Tool              |
+| (Make Sure Setting is PAL)                                                   |
+|                                                                              |
+| Use Action Replay 2 to boot PS2 Backups                                      |
+| Boot with CD1, Select WITHOUT CODES, Insert Backup - PLAY !                  |
+|                                                                              |
+| Not compatible (yet) PSX Originals/PS2 Import Originals/EA Sports Games      |
+| These have been fixed and we are finalizing design which will be the Neo 2   |
+|                                                                              |
+| ::::::::::::::::::::::::::::::::::::::::: ::: :: : i n s t a l l . n o t e s |
+) - -- ------------------------------------------------------------------ -- - (
