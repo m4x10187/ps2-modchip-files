@@ -1,0 +1,17 @@
+fuse=7f2
+fusex=f7f
+
+OR
+
+brown out reset= disabled
+brown out trim= 3
+memory= 4 pages, 8 banks
+internal rc= disabled
+external osc= hs3
+internal feedback= 1
+watchdog timer= disabled
+carry flag input add/sub= disabled
+option stack= enabled
+turbo= enabled
+sync inputs= disabled
+code protection= enabled

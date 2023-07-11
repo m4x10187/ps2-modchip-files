@@ -1,0 +1,45 @@
+Release: REAL Magic 3.1 code for Scenix 28AC
+Date: 14th APril 2003
+Released By: PS2 Scene Lover / www.pstation.co.uk
+
+
+I noticed that a lot of homebrew development has been going on with the PS2 scene due to the R16 rls of the Magic 3 code.
+
+Well homebrew is where it all should be at - the mod developers have been fleecing everyone for long enough - why cant't
+they simply sell a peice of hardware that can be flashed with whatever opensource code works best ?
+
+You only have to look at the xbox scene and how much it has grown in a very short space of time. All the software and bios's are opensource , you imply buy the hardware to programme - so the mod sellers still make a profit but it puts the functionaility of the mod in the hands of the public - for ANYONE to say this wont work - i have 2 words for you "xbox scene".
+
+Well I have some skills so I leeched the real Magic 3.1 code from the scenix. Here it is for free - im sure many bugs have been resolved and it gives a good platform for the homebrew scene to develop and improve.
+
+All we need now is for someone to develop a more stable hardware platform whilst utilizing the SC28 - and also maybe an updater device for people to programme their mods while it is installed into your console - perhaps then we can have a "cheapmod" like the Xbox scene - $5 to build with update capabilities.
+
+
+Suggestions for those that can:
+
+Ask around for the Paradox PS2 BIOS dumper kit - all you need is a firewire cable connected to your PC.
+
+Fit DMS3 v2.0 / M2 v1.30 and compare bios data
+
+Implement results into Magic 3.1 - all the information is there for you to develop this with ease.
+
+Someone improve the stability of the current SC28 M3 design - its fucking easy !
+
+Create a CVS system for code updates - the current system sucks - its like you havent got a clue (but I know you have)
+
+In fact the name Magic 3 should really end as it will no longer be a "Magic Product" - "HBPS2 PROJECT" sounds more like it.
+
+
+
+PS2 HOMEBREW SCENE - ENJOY !!!!
+
+
+
+Greetz to:
+All those who work FOR the scene - not against it.
+
+Respect to:
+Herben, Igor, DMS3, Origa, Neo, Walter, Old Crow.
+
+Fuck You's to:
+Gazza, Zima, Nasis-X, Darren Watkins (Grass), Cloners, Glory Hunters, Wannabees.
