@@ -1,0 +1,35 @@
+
+TARGET BIN, R5900
+
+;INCLUDE "macros.s"	; not used
+INCLUDE "define.inc"
+
+code SEGMENT 0x00101654	; to 001016F4(size=0xA0)
+
+PS2LOGO PROC
+	add		a3, zero, s1	; logo data
+	addiu	v1, zero, 384 * 64	; 384x64 pixels(NTSC), 344x71.4 pixels(PAL) cd logo
+	lbu		v0, 0(a3)	; mask code(useing pixel 1)
+loop:					;      /
+	lbu		a0, 0(a3)	;     / 
+	addiu	v1, v1, -1		;    /	
+	xor		a0, a0, v0	;   /
+	sb		a0, 0(a3)	;  /
+	bgez	v1, @loop		; /
+	addiu	a3, a3, 1		;/
+	sw		zero, 0x80D0(gp)
+	lbu		v0, 0x12E(s1)	; xor to see if pal or ntsc
+	lbu		v1, 0x12F(s1)	;  /
+	xor		v0, v0, v1	; /
+	addiu	v1, zero, 0x1A	
+	bne		v0, v1, @ntsc
+	addiu	a3, zero, 1		; pal
+	j		0x001016F4	;  /
+	sw		a3, 0x80CC(gp)	; /
+ntsc:
+	addiu	a3, zero, 0		; ntsc
+	j		0x001016F4	;  /
+	sw		a3, 0x80CC(gp)	; /
+PS2LOGO ENDP
+
+code ENDS

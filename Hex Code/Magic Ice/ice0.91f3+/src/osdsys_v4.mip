@@ -1,0 +1,48 @@
+
+TARGET BIN, R5900
+
+;INCLUDE "macros.s"	; not used
+INCLUDE "define.inc"
+
+PSX_CHECK	EQU	0x002023D8
+PS2_CHECK	EQU	0x0020230C
+;PS2_CHECK2	EQU	0x00000000
+DVD_CHECK	EQU	0x00202544
+DVDU_CHECK	EQU	0x002024D8
+NO_CFG		EQU	0x002021A4
+NO_BOOT2	EQU	0x00202288
+PS2LOGO		EQU	0x00202334
+ON_PSX_LOAD	EQU	0x00202CCC
+LOAD_PSX	EQU	0x00202378
+LOAD_PS2	EQU	0x00202140
+LOAD_DVD	EQU	0x00202410
+
+code SEGMENT 0x001001B0 ; to 001007E0(size=0x0630)
+
+OSDSYS_V4 PROC
+	lui	v1, 0x0020		; 0020xxxx(addr)
+	sw	zero, (PS2_CHECK & 0xFFFF)(v1)
+	IF KILL_LOGO					; load ps2 elf file(was load ps2logo)
+		lui	s1, 0x2604			; 00202400  00 00 04 26  addiu	a0, s0, 0
+		sw	s1, (PS2LOGO & 0xFFFF)(v1)	; /
+		lui	s1, 0x2405			; 00202404  00 00 05 24  li		a1, 0
+		sw	s1, ((PS2LOGO+4) & 0xFFFF)(v1)	; /
+	ENDIF
+	addiu	v1, zero, 7
+	syscall
+
+; unpacked patch
+; 002021A4  04 09 08 0C  jal 0x00202410	; if no system.cnf then then load V-DVD
+; 00202288  DE 08 08 0C  jal 0x00202378	; if no BOOT2(in system.cnf) then load psx game
+; 0020230C  00 00 00 00  nop			; PS2 Cd Check
+; 002023d8  04 00 00 10  j 0x002023EC	; PSX Cd Check
+									;  was only disk type psx(psx cd/psx cd with CDDA)
+; 002024D8  04 00 00 10  j 0x002024EC	; V-DVD(updated) Check
+;									;     was only disk type V-DVD
+; 00202544  04 00 00 10  j 0x00202558	; V-DVD Check
+;									;     was only disk type V-DVD
+OSDSYS_V4 ENDP
+
+code ENDS
+
+

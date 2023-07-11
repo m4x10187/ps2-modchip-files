@@ -1,0 +1,57 @@
+; JAP SCPH10000
+TARGET BIN, R5900
+
+;INCLUDE "macros.s"	; not used
+INCLUDE "define.inc"
+
+;PSX_CHECK	EQU	0x00000000
+PS2_CHECK	EQU	0x00202BF4
+;PS2_CHECK2	EQU	0x00000000
+;DVD_CHECK	EQU	0x00000000
+;DVDU_CHECK	EQU	0x00000000
+NO_CFG		EQU	0x00202A9C
+NO_BOOT2	EQU	0x00202B68
+PS2LOGO		EQU	0x00202C1C
+ON_PSX_LOAD	EQU	0x0020335C
+LOAD_PSX	EQU	0x00202C60
+LOAD_PS2	EQU	0x00202A38
+LOAD_DVD	EQU	0x00202CD0
+
+; find 60 00 11 00 02
+
+code SEGMENT 0x002111C0
+OSDSYS_10k PROC
+SMC:; some smc hehe :)
+	lui	v1, 0x0020
+	lui	t0, 0x0C08; jal 0x0020xxxx
+	sw	zero,(PS2_CHECK & 0xFFFF)(v1)
+;	IF SCEX_ONLY ; for hell of it...
+	ori	t1, t0, (LOAD_DVD/4 & 0xFFFF)
+	sw	t1, (NO_CFG & 0xFFFF)(v1)
+	ori	t1, t0, (LOAD_PSX/4 & 0xFFFF)
+	sw	t1, (NO_BOOT2 & 0xFFFF)(v1)
+;	ori	t1, t0, (LOAD_PS2/4 & 0xFFFF)
+;	sw	t0, (ON_PSX_LOAD & 0xFFFF)(v1)
+;	ENDIF
+;	IF KILL_LOGO	; logo code is not patched right now!.. so we just kill it!!
+	lui	t0, 0x2604
+	sw	t0, (PS2LOGO & 0xFFFF)(v1)
+	lui	t0, 0x2405
+	sw	t0, ((PS2LOGO+4) & 0xFFFF)(v1)
+;	ENDIF
+	; patch are code so will not run over and over...(not like it needed..)
+	lui	t1, (0x0800+(@JMP/4 >> 16))	; j @JMP
+	ori	t1, t1, (@JMP/4 & 0xFFFF) 	; /
+	lui	v1, (@SMC >> 16)		; patch it
+	sw	t1, (@SMC & 0xFFFF)(v1)		; /
+	sw	zero, ((@SMC+4) & 0xFFFF)(v1)	; nop
+JMP:
+	; FlushCache
+	addiu	v1, zero, 0x64
+	syscall
+	jr		ra
+OSDSYS_10k ENDP
+
+
+code ENDS
+

@@ -1,0 +1,46 @@
+; V5/6/7/8
+TARGET BIN, R5900
+
+;INCLUDE "macros.s"	; not used
+INCLUDE "define.inc"
+
+PSX_CHECK	EQU	0x002025C4
+PS2_CHECK	EQU	0x002024E4
+PS2_CHECK2	EQU	0x002022E4
+PS2_CHECK3	EQU	0x0020BC84
+DVD_CHECK	EQU	0x0020274C
+DVDU_CHECK	EQU	0x002026E0
+NO_CFG		EQU	0x002023F8
+NO_BOOT2	EQU	0x00202460
+PS2LOGO		EQU	0x00202508
+ON_PSX_LOAD	EQU	0x00202EDC
+LOAD_PSX	EQU	0x00202550
+LOAD_PS2	EQU	0x002022A0
+LOAD_DVD	EQU	0x00202600
+
+code SEGMENT 0x001001B0 ; to 001007E0(size=0x0630)
+
+OSDSYS_Vx PROC
+	lui	v1, 0x0020		; 0020xxxx(addr)
+	IF KILL_LOGO					; load ps2 elf file(was load ps2logo)
+		lui	s1, 0x2604			; 00202508  00 00 04 26  addiu	a0, s0, 0
+		sw	s1, (PS2LOGO & 0xFFFF)(v1)	; /
+		lui	s1, 0x2405			; 0020250C  00 00 05 24  li	a1, 0
+		sw	s1, ((PS2LOGO+4) & 0xFFFF)(v1)	; /
+	ENDIF	
+	lui	s0, 0x2402			; mov v0, 0(to save some code ;-) )
+	sw	zero, (PS2_CHECK & 0xFFFF)(v1)
+	sw	s0, (PS2_CHECK2 & 0xFFFF)(v1)
+	ori	v1, v1, (PS2_CHECK3 & 0xFFFF)
+	sw	s0, 0(v1)
+	addiu	v1, zero, 7
+	syscall	; to be safe
+; unpacked patch
+;002024E4 0000000   nop(same as m3)	; Kill ps2 Cd Check
+;002022E4 24020000  mov v0, 0		; ReadKey failed
+;0020BC84 24020000  mov v0, 0		; ReadKey.. Browser...
+
+OSDSYS_Vx ENDP
+
+code ENDS
+

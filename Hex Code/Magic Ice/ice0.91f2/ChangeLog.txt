@@ -1,0 +1,138 @@
+
+03-06-2003 0.91F2 - LacygX
+   * BACK to OLD DVD ROUT => ORIGINALS PROB(thx to vdavide for pointing out)
+   * LSD / SHUT_DOWN logical error fix
+
+29-05-2003 0.91F - LacygX
+   * FINAL DVD ROUTINE (VDAVIDE THX) 100/100
+   * Fixed XCDVDMAN
+
+29-05-2003 x.xx - RCE
+   * made ChangeLog.txt(format base on one from ps2lib)
+       note not all is listed! :(
+   * made readme.txt thx to guichi part ;)
+
+26-05-2003 0.91 - LacygX
+   * solved BIG LBA > 300000 boot(PS2)
+   * fixed PS2LOGO
+
+14-04-2003 x.xx - Bald Bouncer/jumbo
+   * Posted magic 3.1 HEX(magic3.zip) on http://pstation.co.uk/
+       leaked/riped by jumbo aka 'ps2 scene lover' aka NA
+       
+31-03-2003 0.90 - LacygX
+   * removed protected Mode(not need any more but need's testing)
+   * W is now Messiah W
+       NOTE: REST & W are not swaped now
+
+19-03-2003 0.88 - vdavide
+   * removed DELAY320nS(delay free ver)
+
+19-03-2003 0.88 - LacygX
+   * removed DELAY_BIG(delay free ver)
+
+14-02-2003 0.85 - RCE
+   * rename to magic ICE
+   * added NO_BUS(u need to copy files in nobus over other files if used...)
+   * mips rewrite...
+   * Can make one hex for V1-V8
+
+14-02-2003 0.85 - LacygX
+   * Added DVD movie Mode
+   * removed delay for media detection...
+   * PSX1 MODE fixed (ALL PAL tested)
+   * Vdavide new DVD routine( + some modifications)
+   * Added V7 SPECIAL mode(for protected games)
+
+09-01-2003 0.8x - LacygX
+   * fixed psx sleep
+   * fix v8(aka new v7/8 bios 090) ps2
+   * removed EJECT_SLEEP
+   * eject code fixed psx/ps2(for dvd browser boot...)
+   
+09-01-2003 0.8x - vdavide(added from edited ver(v0.785n))
+   * added new cd/dvd sync code
+
+09-01-2003 0.8x - RCE
+   * kill logo bug in v3 fixed.
+   * boot game from browser fixed(for v5/6/7/8) 
+   * code for v1 added...
+   * hacked code for jap-10k(temp.... untested... 1min hack...)
+
+09-01-2003 0.79 - LacygX
+   * Add 54Mhz Code
+
+09-12-2002 0.78x - LacygX
+   * rename files(*.mips) by ver
+   * removed delays code
+   * removed duplicate xcdcd code
+   * fixed POWER_DOWN(untested)
+   * fixed EJECT_SLEEP
+   * fixed FULL_SLEEP
+   * fixed swap pins
+   * removed SWAP_PINS(swap all the time now)
+   * ...
+
+09-12-2002 0.78x - RCE
+   * moved r5900 code to *.mip
+   * added POWER_DOWN untested...
+   * added SWAP_PINS
+   * added KILL_LOGO(for v3 aka all)
+   * added SCEX_ONLY
+   * added osdsys_10k.mip
+
+08-12-2002 0.777 - RCE
+   * removed some macros
+   * readded KILL_LOGO(for 50/XX only)
+   * added GH015(V6) bios pins thx to razorx
+   * ...
+
+04-12-2002 0.76x - RCE
+   *  thx to Guichi(for info)
+   * removed BIOSXX_LOGO & BIOS2050_KILL_LOGO
+   * fixed some errors
+   * added fuses(unhard coded)
+
+04-12-2002 0.75 - RCE
+   * added fuses(hard coded)
+   * added EJECT_SLEEP(see code...)
+
+29-11-2002 0.74 - RCE
+   * added sleep to BIOS2050_KILL_LOGO
+   * added FULL_SLEEP
+   * ...
+
+28-11-2002 0.73 - RCE
+   * disam of r5900/r3000(95% or so)
+   * added BIOSXX_LOGO(untested) BAD!
+   * added BIOS2050_KILL_LOGO(untested) BAD!
+
+28-11-2002 0.72 - RCE
+   * var names 95% done
+   * disam of r5900/r3000(33% or so)
+   * ...
+
+28-11-2002 0.71 - Rattle
+   * Fixed pin numbers(in text pic of chip)
+   * Rename IO_CDDVD_OE to IO_EJECT_BUTTON(right name)
+
+27-11-2002 0.70 - RCE
+   * Posted on ps2newz
+
+24-11-2002 x.xx - Guichi
+   * Posted decompiled hex(useing beta ver of Herben SX disassember) 
+       this file(magic3_b.src.txt) used for start of code
+
+21-11-2002 x.xx - Robot/jumbo
+   * Posted magic 3 R16 HEX(magic3.zip)
+       leaked/riped by jumbo aka 'ps2 scene lover' aka NA
+
+xx-xx-2002 x.xx - LacygX
+   * biosp.txt(bios patch notes)
+   * disassembled magic 2 sx hex
+
+11-11-2002 x.xx - SniperKilla
+   * Posted magic 2 HEX V5/V7(sk-magic2.zip)
+
+08-11-2002 x.xx - Rex
+   * Posted Messiah Gerber files.

@@ -1,0 +1,43 @@
+;ICE REVOLUTION CODE
+;V1-11 code first release 30 sep. 2004.
+;Most of the code is completely rewriten AND new 
+;Developed by :  Lacyg, vdavide , RCE .
+;Tested on V3V4V5V7V8V9V10 PAL vers.
+
+;--------------------------------------------------------------------------
+; Special thanks to :
+; - Lacyg & RCE for bios, first PCB's , 54M code and lost nights on logs :)
+; - Germano for support and a lot of info ... 
+; - DAMPRO for autoexploit
+; - Someone that ... help without know ... he he ...
+;--------------------------------------------------------------------------
+
+; CURRENT VERSION FEATURES
+; - Only 3 wire on cddvd controller for PAL and NTSC (B,G,I) for JAP need H for RW support need F
+; - AR2 operations and PSX bootdisk operations if need .
+; - Mplayer operations.
+; - Boot ps2 dvdr/rw and dvd+r  
+; - Chip can be disabled and auto-sleep if load dvd in psx mode ( original or video I.E.)
+; - Automode for ps2 prot. games :) 
+; - Autoexploit mode = loads exploit elf from MC
+; - RGB fix 
+; - PSX1 imports fix
+; NOTE : B <=> F swap need
+
+
+; CURRENT VERSION Operation mode
+; -All original media ,  video & audio CD : turn off chip ( see below... )
+; -Exploit mode : Long reset from STBY
+; -PS1 game : Long reset from STBY + short reset( blue led on eject ).
+; -PS2 game : short reset from STBY if disk already inserted, or 
+;  power up by eject then insert disk .
+; -Put PS2 into STBY also when change mode PS1 - CHIP OFF - PS2 
+; -Turn off chip : keep reset for 4 sec. (about) from STBY (you can load only original, video & audio CD).
+;  May be usefull for future online games ( may check chip ...)
+
+; FUSE SETTINGS
+; -use FUSE=7F1, FUSEX=F7F
+; -for .hex file simply rename .SXH to .HEX
+; -use 54M clock point for 54M code only (V954m)
+
+

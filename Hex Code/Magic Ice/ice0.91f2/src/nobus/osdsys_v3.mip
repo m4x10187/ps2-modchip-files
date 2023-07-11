@@ -1,0 +1,60 @@
+
+TARGET BIN, R5900
+
+;INCLUDE "macros.s"	; not used
+INCLUDE "define.inc"
+
+PSX_CHECK	EQU	0x002024A8
+PS2_CHECK	EQU	0x002023D8
+;PS2_CHECK2	EQU	0x00000000
+DVD_CHECK	EQU	0x00202604
+DVDU_CHECK	EQU	0x00202598
+NO_CFG		EQU	0x00202284
+NO_BOOT2	EQU	0x00202350
+PS2LOGO		EQU	0x00202400
+ON_PSX_LOAD	EQU	0x00202D44
+LOAD_PSX	EQU	0x00202448
+LOAD_PS2	EQU	0x00202220
+LOAD_DVD	EQU	0x002024E0
+
+code SEGMENT 0x001001B0 ; to 001007E0(size=0x0630)
+
+OSDSYS_V3 PROC
+	lui	v1, 0x0020		; 0020xxxx(addr)
+	lui	s0, 0x1000		; j $+0x14
+	ori	s0, s0, 0x0004	; /
+	lui	s1, 0x0C08		; jal 0x0020xxxx
+	ori	s2, s1, (LOAD_DVD/4 & 0xFFFF)
+	sw	s2, (NO_CFG & 0xFFFF)(v1)
+	sw	s0, (DVD_CHECK & 0xFFFF)(v1)
+	sw	s0, (DVDU_CHECK & 0xFFFF)(v1)
+	ori	s2, s1, (LOAD_PSX/4 & 0xFFFF)
+	sw	s2, (NO_BOOT2 & 0xFFFF)(v1)
+	sw	s0, (PSX_CHECK & 0xFFFF)(v1)
+	sw	zero, (PS2_CHECK & 0xFFFF)(v1)	
+	IF KILL_LOGO							; load ps2 elf file(was load ps2logo)
+		lui	s1, 0x2624						; 00202400  00 00 04 26  addiu	a0, s1, 0
+		sw	s1, (PS2LOGO & 0xFFFF)(v1)		; /
+		lui	s1, 0x2405						; 00202404  00 00 05 24  li		a1, 0
+		sw	s1, ((PS2LOGO+4) & 0xFFFF)(v1)	; /
+	ENDIF
+	
+	; load psx as ps2 
+	lui s2, 0x0C08
+	ori	s2, s2, (LOAD_PS2/4 & 0xFFFF)	; 00202D44  88 08 08 0C  jal 0x00202220
+	sw	s2, (ON_PSX_LOAD & 0xFFFF)(v1)	; /
+		
+	addiu	v1, zero, 7
+;sys:	DB	0x0C	; syscall
+	syscall	; to be safe
+
+; unpacked patch(note look at 50 ver the same but offset)
+;00202284  38 09 08 0C  jal 0x002024E0
+;00202350  12 09 08 0C  jal 0x00202448
+;002023D8  00 00 00 00  nop
+;002024A8  04 00 00 10  j 0x002024BC
+;00202598  04 00 00 10  j 0x002025AC
+;00202604  04 00 00 10  j 0x00202618
+OSDSYS_V3 ENDP
+
+code ENDS

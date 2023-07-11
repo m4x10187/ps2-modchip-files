@@ -1,0 +1,57 @@
+;V9 code first release 01 dec. 2003.
+;Most of the code is completely new , not from Magic3 .
+;Developed by : vdavide , Lacyg , RCE .
+;Tested on 50K4 PAL vers. only .
+
+;--------------------------------------------------------------------------
+; Special thanks to :
+; - Lacyg & RCE for bios, first PCB's , 54M code and lost nights on logs :)
+; - Germano for support and a lot of info ... 
+; - Someone that ... help without know ... he he ...
+;--------------------------------------------------------------------------
+
+; CURRENT VERSION FEATURES
+; - Only 5 wire on cddvd controller ( 22 total ).
+; - AR2 operations and PSX bootdisk operations if need .
+; - Mplayer operations.
+; - Boot ps2 dvdr/rw and dvd+r  ( DVD9 untested ).
+; - Chip can be disabled and auto-sleep if load dvd in psx mode ( original or video I.E.)
+; - Automode for ps2 prot. games :) 
+
+; CURRENT VERSION Operation mode
+; -All original media ,  video & audio CD : turn off chip ( see below... )
+; -PS1 game : Long reset from STBY ( blue led on eject ).
+; -PS2 game : short reset from STBY if disk already inserted, or 
+;  power up by eject then insert disk .
+; -Put PS2 into STBY also when change mode PS1 - CHIP OFF - PS2 
+; -Turn off chip : keep reset for 4 sec. (about) from STBY (you can load only original, video & audio CD).
+;  May be usefull for future online games ( may check chip ...)
+
+; FUSE SETTINGS
+; -use FUSE=7F1, FUSEX=F7F
+; -for .hex file simply rename .SXH to .HEX
+; -use 54M clock point for 54M code only (V954m)
+
+; *CODE CHANGES*
+; RGB FIX + MACRO OFF without additional wires included
+; PSX1 imported games screen position fix included
+; 4 wires on mechabus now (NO CONNECT F = no RW support now)
+
+; V91050m and V91054m on 20 dec. 2003
+; GH-26 BOARD FIX = V9/V10 supported now in one
+; ALL MEDIA FIX ( AUTOMAN media scratched a bit with screwdriver .... ;-))
+; RUS 50008 FIX
+
+
+; V91050m and V91054m on 10 dec. 2003
+; V9 + V10 in one => test 
+; v10 info thx to unnamed
+
+; V950m_f1 and V954m_f1 on 06 dec. 2003
+; Fix for both laser unit ( S**yo or S**Y)
+; Note : known bugs ... sometime ps2 freeze at boot with ps2 games and need switch off 
+; ( but rarely , about 1 every 20 boot ). We know where prob. is and will fix later ...
+
+
+; V950m , V954m on 01 dec. 2003
+; First code release for sx @ 50MHz with resonator/crystal and 54 MHz clock from board 

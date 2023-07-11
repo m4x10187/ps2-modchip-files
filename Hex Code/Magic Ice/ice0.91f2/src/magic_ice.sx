@@ -1,0 +1,973 @@
+; ----------------------------*----------------------------
+; MAGIC ICE v0.91F2 beta by RCE & LacygX... and others :), Base on MAGIC3 R16 HEX
+; RCE SHA-512: CC93E862A2620384184F0E7C80CDEC7B532207FFFB26F94274E533C15DC38383
+;              7B503CFAF0B7F69CDC137870844BD93F70F5DE1C502666B45B9391C124BDB15E
+; --------------------------------------------------------
+; VERSION NOTES:
+; 1. BIG LBA >300000 boot solved
+; 2. PS2LOGO FIX
+; 3. XCDVDMAN FIX
+; 4. BACK to OLD DVD ROUT => ORIGINALS PROB
+; 5. LSD / SHUT_DOWN logical error fix
+; -------------------- greetz & thank ---------------------
+; The Young Crow for BIG MENTAL SUPPORT
+; Robot for posting magic3 hex, testing
+; Guichi for posting decompiled hex
+;      and pal v7 info
+; lacyg for:
+;		info on lots of ps2s
+;		removed delays code
+;		removed xcdcd(duplicate) code
+;		fixed EJECT_SLEEP(REMOVED)
+;		fixed POWER_DOWN
+;		fixed SWAP_PINS
+;		rewrite of PSX_MODE
+;		54Mhz code
+;		v8 fix
+;		testing :)
+;		lots of suff :)
+;		...
+;
+; vdavide for:
+;		fixing dvd freezing
+;		new cd/dvd sync code..(more right)
+;
+; MacDennis for:
+;		nice logs
+;		talking(info ps2..) with me about ps2....
+; warpjavier for being a good! tester...
+; NA for sx chips ;)
+; NA for parts/dvd-r(for testing)...
+; Rattle for some info on bugs
+; razorx for GH015(V6) bios pins
+; napalm-x for naplink
+; pukko for bios dump utility
+; IceWater for ps2unpack
+; Herben for SX disassember(Guichi used a beta ver)
+; Hanimar for ps2dis
+; vince_0x0f for R5900 Dissasemler with code :)
+; wiRe for asm5900/dis5900 with code :)
+; datel for makeing region-x
+; ? for makeing DVD Multi(not used but may b later)
+; ? for makeing the 1st psx mod
+; Old Crow (Scott Rider) for psx mod(base for all ps2 swap mods...)
+; alex for 1st ps2 mod(no name but was edited and call neo)
+; Origa team for Origa(base for all ps2 inport/no swap dvd mods)
+; neo4 team for makeing neo4(base for all no swap mods)
+; Messiah team for Messiah(base for all 9wire bios patching)
+; magic 3 team for makeing magic 3
+; ps2newz.net for kick ass site
+; To all you rce out there
+; You for reading this
+; ---------------------------------------------------------
+; ----------------------- fuck you ------------------------
+; FrAzZmAN(hex2asm(take a good look at it u will see y))
+;             for riping off Modisasm(by Hanimar)
+; ---------------------------------------------------------.
+; ------------------------- notes -------------------------
+; TAB  = 8 spaces
+; Font = Terminal or Fixedsys
+; MAGIC 3 TO ICE... pin Z swap with A and REST with W
+; ---------------------------------------------------------
+; MODES NOTES:
+; 1. power up by RESET => PSX2 CD/DVD
+;	A. media change : EJECTED RESET
+; 2. power up by long RESET (blue reset) => PSX1 mode
+;	A. media change : EJECTED RESET => PSX1 mode
+;			: RESET + EJECT (wait for anim) => back to PSX2 mode
+; 3. power up by holding RESET tell movie plays => MOVIE mode
+; 4. power up by EJECT => V7 + special mode for protected games (MAX PAYNE)
+
+; ---------------------------------------------------------
+; ---------------------- chips pins -----------------------
+; /-------------------------------------------------------\
+; |               RTCC  1. -|-\/-|- 28. MCLR              |
+; |                Vdd  2. -|    |- 27. OSC1              |
+; |                 NC  3. -| S  |- 26. CSC2              |
+; |                Vss  4. -| X  |- 25. (M)RC7(BIOS:D7)   |
+; |                 NC  5. -| 2  |- 24. (N)RC6(BIOS:D6)   |
+; |   (BIOS:OE#)RA0(R)  6. -| 8  |- 23. (O)RC5(BIOS:D5)   |
+; |   (CDDVD:OE)RA1(A)  7. -| /  |- 22. (P)RC4(BIOS:D4)   |
+; |   (PSX:SCEx)RA2(S)  8. -| A  |- 21. (Q)RC3(BIOS:D3)   |
+; |  (DISK TYPE)RA3(W)  9. -| C  |- 20. (T)RC2(BIOS:D2)   |
+; |   (CDDVD:D0)RB0(D) 10. -|    |- 19. (U)RC1(BIOS:D1)   |
+; |   (CDDVD:D1)RB1(C) 11. -| D  |- 18. (V)RC0(BIOS:D0)   |
+; |   (CDDVD:D2)RB2(B) 12. -| I  |- 17. (I)RB7(CDDVD:D7)  |
+; |  (PS2:EJECT)RB3(Z) 13. -| P  |- 16. (H)RB6(CDDVD:D6)  |
+; |(PS2:REST)RB4(REST) 14. -|----|- 15. (G)RB5(CDDVD:D5)  |
+; \-------------------------------------------------------/
+
+INCLUDE "define.inc"
+
+;__fuse		$7F9
+;__fusex	$F7F
+DEVICE	SX28AC, OSCHS2, TURBO, BANKS8, OPTIONX
+;FREQ	50000000	; 50Mhz
+
+; BIOS
+IO_BIOS_OE	EQU 	ra.0
+IO_BIOS_CS	EQU	rb.4; LOW = BIOS select
+IO_BIOS_DATA	EQU 	rc
+
+; CD/DVD
+IO_EJECT	EQU	rb.3; LOW = CD IN, HI = CD OUT
+IO_CDDVD_BUS	EQU	rb
+IO_CDDVD_OE	EQU	ra.1
+
+
+; OTHER PINS
+IO_SCEX		EQU	ra.2
+IO_REST		EQU	ra.3; LOW = rest down
+
+org $8
+VAR_DC1		DS 1 ; delay counter 1(small)
+VAR_DC2		DS 1 ; delay counter 2(small)
+VAR_DC3		DS 1 ; delay counter 3(big)
+VAR_DC4		DS 1 ; delay counter 3(big)
+VAR_PSX_TEMP	DS 1 ; SEND_SCEX:  rename later
+VAR_PSX_BC	DS 1 ; SEND_SCEX:  byte counter  note start at 4(works down to 0)
+VAR_PSX_BYTE	DS 1 ; SEND_SCEX:  byte(to send)
+VAR_PSX_BITC	DS 1 ; SEND_SCEX:  bit counter   note start at 8(works down to 0)
+VAR_PS2_BSC	DS 1 ; byte skip counter(used by cd/dvd code)
+VAR_TOFFSET	DS 1 ; table offset
+VAR_PS2_BC	DS 1 ; cd/dvd byte counter
+VAR_PSX_SC	DS 1 ; SCEX send counter(times sended)
+VAR_BIOS_REGION	DS 1 ; bios info
+VAR_BIOS_VER	DS 1 ;  / not a true ver :( ...
+VAR_BIOS_YR	DS 1 ; /
+VAR_TEMP	DS 1
+VAR_SWITCH	DS 1 ; bit 0=xcddvdman mode + PSX1 region switch, 1=PSX1/PSX2 wakeup mode, 2=PSX1 PAL/NTSC , 3=PSX2 logo patch
+VAR_WAKE	DS 1 ; WAKE pending bits
+VAR_RET		DS 1 ; return from PSX
+
+
+; mDDIR sets the port direction
+mDDIR MACRO port, N
+	mov		m, #00Fh
+	mov		w, N
+	mov		!port, w
+ENDM
+
+BIOS_WAIT_OE_LO MACRO					; only used by mBIOS_SEND!!
+	IF ($ & $E00) == $600				; PAGE8 600-7FF	!!!!!!!!! changed for debug
+call BIOS_WAIT_OE_LO_P8
+	ELSE
+		IF ($ & $E00) == $400			; PAGE4 400-5FF
+			call BIOS_WAIT_OE_LO_P4
+		ELSE
+			IF ($ & $E00) == $200		; PAGE2 200-3FF
+				call BIOS_WAIT_OE_LO_P2
+			ELSE				; PAGE1 000-1FF
+				call BIOS_WAIT_OE_LO_P1
+			ENDIF
+		ENDIF
+	ENDIF
+ENDM
+
+mBIOS_SEND MACRO
+	REPT \0
+		mov IO_BIOS_DATA, \%
+		BIOS_WAIT_OE_LO
+	ENDR
+ENDM
+
+; RRETW Repeat retw
+mRRETW MACRO
+	REPT \0
+		retw \%
+	ENDR
+ENDM
+; ---------------------------------------------------------
+
+org	$0 	; SX_RESET  PAGE1 000-200
+	mov	m,   #00Fh	; all ports = input;
+	mov	!ra, #00Fh	;  /
+	mov	!rb, #0FFh	; /
+	mov	!rc, #0FFh	;/
+
+IFDEF POWER_DOWN
+	mov 	m, #$009 	; set MODE register to access WKPND_B
+	clr	W 		; clear W
+	mov 	!RB, W		; exchange registers = read pending bits
+	mov	VAR_WAKE, W
+
+	snb 	STATUS.3
+	jmp	nowake
+	jb 	VAR_WAKE.3, EX_WAIT	; see if was eject = pending bit only / no port:nowake
+	jb 	VAR_WAKE.4, @IS_XCDVDMAN	; see if was BIOS chip enabled = pending bit only / no port:nowake	
+nowake
+ENDIF
+	jmp	@START
+
+DELAY_BIG	; Delay 2.7sec(about) / see if reset down / cd ejected
+; vdavide: removed checking IO_REST & IO_EJECT , a jmp out of a subroutine (without RET)
+; can cause stack overflow , + I think they have no utility.
+; lacyg NOTE : this delay is not critical !!!
+IFDEF	MODE54
+	mov	VAR_DC3, #0FDh		
+ELSE
+	mov	VAR_DC3, #0F8h		; or F8 for 50M
+ENDIF		
+:loop1	mov	VAR_DC2, #0FFh
+:loop2	mov	VAR_DC1, #0FFh
+:loop3
+	nop
+	nop
+	nop
+	djnz	VAR_DC1, :loop3
+	djnz	VAR_DC2, :loop2
+	djnz	VAR_DC3, :loop1
+	ret
+
+SCEX_HI
+	setb	IO_SCEX		; SCEX HI
+				; Delay About 5mS
+	mov	VAR_DC3, #59
+:loop1
+IFDEF	MODE54
+	mov	VAR_DC2, #229
+ELSE
+	mov	VAR_DC2, #212
+ENDIF
+	not	ra
+:loop2	mov	VAR_DC1, #3
+:loop3	djnz	VAR_DC1, :loop3
+	djnz	VAR_DC2, :loop2
+	djnz	VAR_DC3, :loop1
+	ret
+
+SCEX_LOW
+	clrb	IO_SCEX		; SCEX LOW
+				; Delay About 5mS+
+	mov	VAR_DC3, #59
+:loop1
+IFDEF	MODE54
+	mov	VAR_DC2, #229
+ELSE
+	mov	VAR_DC2, #212
+ENDIF
+	clr	VAR_RET
+	jnb	IO_REST, :shut_down
+:loop2	mov	VAR_DC1, #3
+:loop3
+	djnz	VAR_DC1, :loop3
+	djnz	VAR_DC2, :loop2
+	djnz	VAR_DC3, :loop1
+	ret
+:shut_down
+	call	DELAY_BIG
+	sb	IO_REST
+;	jmp	@END_LOOP	
+	sleep				; shut down chip for original CD's
+	setb	VAR_RET.0		; return to PSX rout
+	ret
+
+SCEx_DATA	; scex table
+	add		PC, w
+	; USA	0
+	mRRETW	'S','C','E','A'
+	; UK	4
+	mRRETW	'S','C','E','E'
+	; JAP	8
+	mRRETW	'S','C','E','I'
+
+SEND_SCEX
+	clr	w
+	mov	VAR_TEMP,#4
+	cje	VAR_BIOS_REGION, #'A', :usa
+	cje	VAR_BIOS_REGION, #'E', :uk
+:jap	add	w,VAR_TEMP
+:uk	add	w,VAR_TEMP
+:usa
+	mov	VAR_TOFFSET, w		; save offset..
+	mDDIR	ra, #%00001011		; output:SCEX, input:all others
+	mov	VAR_PSX_BC, #004h	; 4 bytes to send
+:send_byte
+:next_byte
+	mov	w, VAR_TOFFSET
+	call	SCEx_DATA
+	mov	VAR_PSX_BYTE, w
+	not	VAR_PSX_BYTE
+	mov	VAR_PSX_BITC, #8	; 8 bits in a byte
+
+	call	SCEX_LOW
+	snb	VAR_RET.0
+	ret
+
+	call	SCEX_LOW
+	snb	VAR_RET.0
+	ret
+
+	call	SCEX_HI
+:send
+	rr	VAR_PSX_BYTE
+	jb	C, :hi
+	sb	C
+
+	call	SCEX_LOW
+	snb	VAR_RET.0
+	ret
+
+	jmp	:next2
+:hi
+	call	SCEX_HI
+:next2
+	decsz	VAR_PSX_BITC
+	jmp	:send
+	inc	VAR_TOFFSET
+	djnz	VAR_PSX_BC, :next_byte
+	clrb	IO_SCEX				; SCEX LOW
+	mov	VAR_PSX_TEMP, #22
+:send_end
+
+	call	SCEX_LOW
+	snb	VAR_RET.0
+	ret
+			; send 00 00 00
+	djnz	VAR_PSX_TEMP, :send_end		; /
+	mDDIR	ra, #00Fh			; input:all
+	ret
+
+VERSTR_PATCH					; Verstring patch for import psx1 game
+:loop1	jnb	IO_REST, PSX_MODE		
+	jb	IO_BIOS_OE, :loop1
+	; patch  "5.0 " to "5.0A"
+;	jb	IO_EJECT, PSX_MODE
+
+	cjne	IO_BIOS_DATA, #'5', :loop1	; is byte1 = '5'
+	call	BIOS_WAIT_OE_LO_P1; next byte
+	cjne	IO_BIOS_DATA, #'.', :loop1	; is byte2 = '.'
+	call	BIOS_WAIT_OE_LO_P1; next byte
+	cjne	IO_BIOS_DATA, #'0', :loop1	; is byte3 = '0'
+	call	BIOS_WAIT_OE_LO_P1; next byte
+	cjne	IO_BIOS_DATA, #' ', :loop1	; is byte4 = ' '
+:loop2
+	jb	IO_BIOS_OE, $	; next byte / wait for bios OE low
+	nop
+	cjne	IO_BIOS_DATA, #' ', :loop2	; is byte4 = ' '
+	mov	IO_BIOS_DATA, #'A'		; set  to    'A'
+	mDDIR	IO_BIOS_DATA, #000h		; output
+
+	jb	IO_BIOS_OE, $			; delay free code for 50/54M	
+	nop
+	jnb	IO_BIOS_OE, $				
+
+	mDDIR	IO_BIOS_DATA, #0FFh		; input
+;	setb	VAR_SWITCH.0			; psx1 region mode switch
+	jmp	PSX_MODE:v_back
+
+BIOS_WAIT_OE_LO_P1
+	jb	IO_BIOS_OE, $			; wait for bios OE low
+	IFDEF	MODE54
+		nop
+	ENDIF
+	ret
+
+MECHACON_WAIT_OE_P1
+	jnb	IO_CDDVD_OE,$			;only wait for contr. clock HI
+	nop
+	ret
+
+PS2_PATCH
+:loop0
+	; OSDSYS Wait for 60 00 04 08 ... 06 ...  E0 03(MOVED)
+	jnb	IO_REST,RESET_DOWN
+	jb	IO_BIOS_OE, :loop0		; wait for OE = LOW
+;	nop
+	cjne	IO_BIOS_DATA, #060h, :loop0	; is byte1 = #060h
+	call	BIOS_WAIT_OE_LO_P1; next byte
+	cjne	IO_BIOS_DATA, #000h, :loop0	; is byte2 = #000h
+	call	BIOS_WAIT_OE_LO_P1; next byte
+	cjne	IO_BIOS_DATA, #004h, :loop0	; is byte3 = #004h
+	call	BIOS_WAIT_OE_LO_P1; next byte
+	cjne	IO_BIOS_DATA, #008h, :loop0	; is byte4 = #008h
+
+	cje	VAR_BIOS_VER, #'1', @BIOS_OSDSYS_V1
+	cje	VAR_BIOS_VER, #'2', @BIOS_OSDSYS_V3
+	cje	VAR_BIOS_VER, #'5', @BIOS_OSDSYS_V4
+	jmp	@BIOS_OSDSYS_Vx
+; ENDOF PS2_PATCH
+
+IFNDEF KILL_LOGO				; remove code if not used
+
+PS2_PS2LOGO_2002				; v5/6/7/8
+	mov	VAR_TEMP,#2
+PS2_PS2LOGO
+
+:loopx
+	jnb	IO_REST, @RESET_DOWN
+	jnb	IO_BIOS_CS,:loop0
+	jb	IO_EJECT, @EX_WAIT
+	jb	IO_BIOS_CS,:loopx
+
+:loop0
+;IFDEF	MODE54						; Wait for AF 1E 08
+	jnb	IO_REST, @RESET_DOWN	
+;ENDIF
+	jb	IO_BIOS_OE, :loop0		; wait for OE = LOW	
+	cjne	IO_BIOS_DATA, #0AFh, :loop0	; is byte1 = #0AFh
+	call	BIOS_WAIT_OE_LO_P1; next byte
+	cjne	IO_BIOS_DATA, #01Eh, :loop0	; is byte2 = #01Eh
+	call	BIOS_WAIT_OE_LO_P1; next byte
+	cjne	IO_BIOS_DATA, #008h, :loop0	; is byte3 = #008h
+
+	cje	VAR_TEMP,#2,:skip
+	
+	call	@BIOS_PS2LOGO			; patch logo
+
+:skip	decsz	VAR_TEMP			; repatch in needed
+	jmp	:loop0
+
+	setb	VAR_SWITCH.3			; logo patched switch
+	jmp	@PS2_ENDLOOP
+ENDIF
+
+START
+:loop0
+	; wait for "S201"
+	;        0123456789AB
+	; Read "PS201?0?C200?xxxx.bin"
+	jb	IO_BIOS_OE, $			; next byte / wait for bios OE low
+	cjne	IO_BIOS_DATA, #'S', :loop0	; is byte0 = 'S'	; v8 fix
+	call	BIOS_WAIT_OE_LO_P1; next byte
+	cjne	IO_BIOS_DATA, #'2', :loop0	; is byte1 = '2'
+	call	BIOS_WAIT_OE_LO_P1; next byte
+	cjne	IO_BIOS_DATA, #'0', :loop0	; is byte2 = '0'
+	call	BIOS_WAIT_OE_LO_P1; next byte
+	cjne	IO_BIOS_DATA, #'1', :loop0	; is byte3 = '1'
+	call	BIOS_WAIT_OE_LO_P1; next byte
+	mov	VAR_BIOS_VER, IO_BIOS_DATA	; byte4 = BIOS VER  2, 5, 6
+:loop1
+	jb	IO_BIOS_OE, $			; wait for bios OE low(next byte)
+	nop
+	cjne	IO_BIOS_DATA, #'0', :loop1	; is byte5 = '0'
+	call	BIOS_WAIT_OE_LO_P1; next byte
+	mov	VAR_BIOS_REGION, IO_BIOS_DATA	; byte6 = Region  A(USA) E(UK) I(JAP)
+:loop2
+	jb	IO_BIOS_OE, $			; wait for bios OE low(next byte)
+	nop
+	cjne	IO_BIOS_DATA, #'0', :loop2	; is byte9 = '0'
+	call	BIOS_WAIT_OE_LO_P1; next byte
+	cjne	IO_BIOS_DATA, #'0', :loop2	; is byteA = '0'
+	call	BIOS_WAIT_OE_LO_P1; next byte
+	mov	VAR_BIOS_YR, IO_BIOS_DATA	; byteB = BIOS Year  0(2k), 1(2k1), 2(2k2)
+
+	jnb	IO_REST,PSX_MODE		; psx mode
+	clr	VAR_SWITCH			; clr all switch bits from power up
+
+RESET_DOWN
+	snb	VAR_SWITCH.1
+	jmp	PSX_MODE
+	jmp	PS2_PATCH			; ps2 mode
+
+IFDEF NO_BUS
+
+PS2_PATCH_2	; scex ver(FIXED) 
+	clr	VAR_SWITCH        		; clr all switch bits for wakeup
+	jmp	@BIOS_XCDVDMAN
+EX_WAIT
+	jnb	IO_EJECT, :if1			; jump if eject button = LOW else wait for it
+	jb	VAR_SWITCH.1, PSX_MODE		; if ejected from psx1 mode = wakeup to psx1 mode
+
+:loop1			
+	jnb	IO_REST, RESET_DOWN		; see if rested
+	jb	IO_EJECT, :loop1		; wait for eject button = LOW
+:if1	
+	setb	VAR_SWITCH.0
+	mov	w,#35
+	mov	VAR_PSX_SC,w
+  	
+:SEND_SCEX_2
+	call	SEND_SCEX			; send 35x SCEX 
+	jnb	IO_REST, RESET_DOWN
+	djnz	VAR_PSX_SC, :SEND_SCEX_2
+
+	IFDEF	KILL_LOGO
+		jmp		@PS2_ENDLOOP
+	ELSE                              
+		snb		VAR_SWITCH.3
+		jmp		:change_media
+		cje		VAR_BIOS_YR, #'2', PS2_PS2LOGO_2002
+		mov		VAR_TEMP,#1
+		jmp		PS2_PS2LOGO
+:change_media	jmp	        @IS_XCDVDMAN
+	ENDIF
+
+ELSE
+
+PS2_PATCH_2	; cd/dvd ver
+
+	clr	VAR_SWITCH			; clr all switch bits for wakeup
+	jmp	@BIOS_XCDVDMAN			; if need cdvdman patch = >>>> not needed
+	
+EX_WAIT
+	jb	VAR_SWITCH.1, PSX_MODE		; if ejected from psx1 mode = wakeup to psx1 mode
+
+LSD            					;  V1.1 ALL mechacons compatible (hope) L.S.D. = LACYG SIMPLE DISC DETECTOR
+:loop0
+	jb	VAR_SWITCH.1,:loopx		; logical fix for shutdown
+	jnb	IO_REST, RESET_DOWN
+:loopx	jb	IO_CDDVD_OE, :loop0
+	cjne	IO_CDDVD_BUS, #050h, :loop0
+	call	MECHACON_WAIT_OE_P1
+:loop3
+	jb	IO_CDDVD_OE, :loop3
+	cjne	IO_CDDVD_BUS, #031h, :loop0
+	call	MECHACON_WAIT_OE_P1
+:loop5
+	jb	IO_CDDVD_OE, :loop5		; speed fix
+	mov	VAR_TEMP,IO_CDDVD_BUS
+	cje	VAR_TEMP, #0D4h, :loop6
+	cje	VAR_TEMP, #0D6h, :loop6	
+	cjne	VAR_TEMP, #0D2h, :loop0
+
+:loop6
+	jnb	IO_CDDVD_OE, $
+	jb	IO_CDDVD_OE, $
+	nop
+	mov	VAR_TEMP,IO_CDDVD_BUS		; save control byte
+
+	snb	VAR_SWITCH.1
+	jmp	PSX_MODE:loop0
+
+	sb	VAR_TEMP.0		; 90 = DVD / 91 = CD
+:dvd    
+	jmp	@CDDVD_PATCH_DVD
+:cd     
+	jmp	@CDDVD_PATCH_CD
+
+MECHCON_BACK
+	IFDEF	KILL_LOGO
+		jmp	@PS2_ENDLOOP
+	ELSE                              
+		snb	VAR_SWITCH.3
+		jmp	:change_media
+		cje	VAR_BIOS_YR, #'2', PS2_PS2LOGO_2002
+		mov	VAR_TEMP,#1
+		jmp	PS2_PS2LOGO
+:change_media	jmp	@IS_XCDVDMAN
+	ENDIF
+
+ENDIF
+
+PSX_MODE						;new psx1 mode + powerdown
+	clr	VAR_SWITCH
+	clr	VAR_RET
+	setb	VAR_SWITCH.1
+	jmp	LSD
+	
+:loop0	cjne	VAR_BIOS_YR,#1,:loopv7
+;	snb	STATUS.0			; > 2 for future 2003 .... hehe
+;	jmp	:loopv7
+	mov	w,#20
+	jmp	:loop1
+:loopv7	mov	w,#32	
+:loop1	mov	VAR_PSX_SC,w
+	
+:SEND_SCEX_1
+	call	SEND_SCEX			; send 35x SCEX 
+	jb	VAR_RET.0, :loop2		; reset?
+	jnb	IO_REST, PSX_MODE
+	jb	IO_EJECT, PSX_MODE
+:loop2	djnz	VAR_PSX_SC, :SEND_SCEX_1
+
+	snb	VAR_SWITCH.2
+	jmp	@END_LOOP
+	
+	jmp	VERSTR_PATCH
+
+:v_back	setb	VAR_SWITCH.2
+	mov	w,#70      			; 
+	jmp	:loop1
+
+org $200					; PAGE2 200-3FF
+
+BIOS_WAIT_OE_LO_P2
+	jb	IO_BIOS_OE, $			; wait for bios OE low
+IFDEF	MODE54
+	nop
+ENDIF
+	ret
+
+IS_XCDVDMAN					; SLEEP FOR ALL = if no BIOS akt
+	mov	VAR_DC4, #100			; 30-35 sec wait for BIOS
+:loop4	mov	VAR_DC3, #0FFh
+:loop3	mov	VAR_DC2, #0FFh
+:loop2	mov	VAR_DC1, #0FFh
+:loopx  jnb	IO_BIOS_CS,:loop1
+	jnb	IO_REST, @RESET_DOWN
+	jnb	IO_BIOS_CS,:loop1
+	jb	IO_EJECT, @EX_WAIT			
+	djnz	VAR_DC1, :loopx
+	djnz	VAR_DC2, :loop2
+	djnz	VAR_DC3, :loop3	
+	djnz	VAR_DC4, :loop4
+	jmp	END_LOOP
+
+:loop0  
+	jb	IO_BIOS_CS,:loopx
+:loop1	cjne	IO_BIOS_DATA, #0A2h, :loop0	; is byte1 = #0A2h    15
+	call	BIOS_WAIT_OE_LO_P2; next byte
+	cjne	IO_BIOS_DATA, #093h, :loop0	; is byte2 = #093h    00
+	call	BIOS_WAIT_OE_LO_P2; next byte
+	cjne	IO_BIOS_DATA, #023h, :loop0	; is byte3 = #023h    02
+	jmp	PS2_ENDLOOP
+
+PS2_ENDLOOP
+	setb	VAR_SWITCH.0
+
+BIOS_XCDVDMAN	; call by PS2_PATCH_2 only ones...
+; wait for A2, 93, ??(86 / B5 / A9 / CB), ... 27
+:loop0
+;	jb	IO_EJECT, @EX_WAIT		
+	jnb	IO_REST, @RESET_DOWN		; MOVE most games(and AR/GS) load xcddvdman...
+	jb	IO_BIOS_OE, :loop0		; wait for OE = LOW
+
+	cjne	IO_BIOS_DATA, #0A2h, :loop0	; is byte1 = #0A2h
+	call	BIOS_WAIT_OE_LO_P2; next byte
+	cjne	IO_BIOS_DATA, #093h, :loop0	; is byte2 = #093h
+	call	BIOS_WAIT_OE_LO_P2; next byte
+	mov	VAR_TEMP, IO_BIOS_DATA		;    byte3   read
+
+;	cje	VAR_TEMP, #0CBh, :next		; is byte3 = #0CBh cddvdman all vers(but for jap 10k)
+	cje	VAR_TEMP, #086h, :next		; is byte3 = #086h ps2 v1/2/3/4
+	cje	VAR_TEMP, #0B5h, :next		; is byte3 = #0B5h ps2 v5/6
+	cjne	VAR_TEMP, #0A9h, :loop0		; is byte3 = #0A9h ps2 v7/8
+:next	; wait for 27
+:loop1
+	; patch it
+	; Addr 00006A28 export 0x23(Cd Check) kill it
+	; 00006A28: 08 00 E0 03  jr ra
+	; 00006A2C: 00 00 00 00  nop
+	jb	IO_BIOS_OE, $			; next byte / wait for bios OE low
+	nop
+	cjne	IO_BIOS_DATA, #027h, :loop1	; is byte1 = #027h
+	mov	IO_BIOS_DATA, #008h		;    byte1 = #008h
+	mDDIR	IO_BIOS_DATA, #000h		; port=output
+	jb	IO_BIOS_OE, $			; wait for bios OE low(next byte)
+	jnb	IO_BIOS_OE, $			; wait for bios OE HI
+	mBIOS_SEND #000h, #0E0h, #003h, 	;
+	mBIOS_SEND #000h, #000h, #000h, #000h	; send "nop"
+
+	mDDIR	IO_BIOS_DATA, #0FFh		; input
+	sb	VAR_SWITCH.0
+	jmp	@EX_WAIT
+
+END_LOOP					; patch over and over....
+IFDEF POWER_DOWN
+	mov		m, #00Ah			; set up edge register
+	mov		!rb, #%00001000		; RB3 wait for HI RB4 wait for LOW
+	mov		m, #009h			; clear all wakeup pending bits
+	clr		w					;  /
+	mov		!rb,w				; /
+	mov		m, #00Bh			; enable wakeup
+	mov		!rb, #%11100111		; / RB3 & RB4
+	snb	VAR_SWITCH.1
+	mov		!rb, #%11110111		; / RB3 = ONLY EJECT WAKEUP FOR PSX1
+	mode	#00Fh				; rest mode
+ENDIF
+	sleep
+;	jmp	@PS2_ENDLOOP			; never sleep
+
+
+E003_SYNC
+
+:loop1
+	jb	IO_BIOS_OE, $; next byte(OE low..)
+	nop
+	cjne	IO_BIOS_DATA, #006h, :loop1	; is byte1 = #006h
+
+	clr	IO_BIOS_DATA
+	mov	m, #00Fh
+
+:loop66	jb	IO_BIOS_OE, $		; next byte / wait for bios OE low
+	nop
+	cjne	IO_BIOS_DATA, #0E0h, :loop66; is byte1 = #0E0h
+	call	BIOS_WAIT_OE_LO_P2; next byte
+	cjne	IO_BIOS_DATA, #003h, :loop66; is byte2 = #003h
+
+	mov	!IO_BIOS_DATA, w
+	retp
+
+BIOS_OSDSYS_V1		; HACK this just for now...
+IF PS2_BIOS & BIOS_V1
+        call	@E003_SYNC
+	jb	IO_BIOS_OE, $		; next byte / wait for bios OE low
+;	mov	IO_BIOS_DATA, #000h	; byte1 = #000h
+	jnb	IO_BIOS_OE, $		; wait for bios OE hi
+	mBIOS_SEND #000h, #000h, #000h
+	INCLUDE ".\obj\osdsys_v1.inc"	; r5900 code
+	mDDIR	IO_BIOS_DATA, #0FFh	; port=input
+ENDIF
+	jmp	@PS2_PATCH_2	; here to be safe
+
+
+BIOS_OSDSYS_V3
+IF PS2_BIOS & BIOS_V3)
+        call	@E003_SYNC
+	jb	IO_BIOS_OE, $		; next byte / wait for bios OE low
+;	mov	IO_BIOS_DATA, #000h	; byte1 = #000h
+	jnb	IO_BIOS_OE, $		; wait for bios OE hi
+	mBIOS_SEND #000h, #000h, #000h
+	INCLUDE ".\obj\osdsys_v3.inc"	; r5900 code
+	mDDIR	IO_BIOS_DATA, #0FFh	; port=input
+ENDIF
+	jmp	@PS2_PATCH_2	; here to be safe
+
+BIOS_OSDSYS_V4
+IF PS2_BIOS & BIOS_V4)
+        call	@E003_SYNC
+	jb	IO_BIOS_OE, $		; next byte / wait for bios OE low
+;	mov	IO_BIOS_DATA, #000h	; byte1 = #000h
+	jnb	IO_BIOS_OE, $		; wait for bios OE hi
+	mBIOS_SEND #000h, #000h, #000h
+	INCLUDE ".\obj\osdsys_v4.inc"	; r5900 code
+	mDDIR	IO_BIOS_DATA, #0FFh	; port=input
+ENDIF
+	jmp	@PS2_PATCH_2	; here to be safe
+
+
+org $400	; PAGE4 400-5FF
+
+BIOS_WAIT_OE_LO_P4
+	jb	IO_BIOS_OE, $			; wait for bios OE low
+	IFDEF	MODE54
+		nop
+	ENDIF
+	ret
+
+IFNDEF KILL_LOGO	; remove code if not used
+BIOS_PS2LOGO		; PATCH PS2LOGO
+			; Wait for 0C
+
+:loop1			
+	jb	IO_BIOS_OE, :loop1		; wait for OE = LOW
+	nop
+	cjne	IO_BIOS_DATA, #00Ch, :loop1	; is last byte = #00Ch
+	mov	IO_BIOS_DATA, #000h
+	mDDIR	IO_BIOS_DATA, #000h		; port=output
+	jb	IO_BIOS_OE, $			; wait for bios OE low(next byte)
+	jnb	IO_BIOS_OE, $			; wait for bios OE hi
+	mBIOS_SEND #000h, #000h, #000h
+	INCLUDE ".\obj\ps2logo.inc"		; r5900 code
+	mDDIR	IO_BIOS_DATA, #0FFh		; input
+	retp
+ENDIF
+
+org $600	; PAGE8 600-7FF
+
+BIOS_WAIT_OE_LO_P8
+	jb	IO_BIOS_OE, $			; wait for bios OE low
+IFDEF	MODE54
+	nop
+ENDIF
+	ret
+
+IFNDEF NO_BUS; kill cd/dvd code if not used
+
+PACKIT_BYTE
+	add	PC, w
+	; USA	0
+	mRRETW	027h, 0A7h, 0A2h, 002h, 027h, 025h, 021h, 081h
+	mRRETW	021h, 003h, 064h, 064h, 043h, 043h, 000h, 084h
+	; UK	16
+	mRRETW	041h, 041h, 0E6h, 0C6h, 005h, 027h, 023h, 0A4h
+	mRRETW	061h, 007h, 021h, 021h, 040h, 040h, 000h, 084h
+	;00 00 11 11 01 01 00 11 
+	;00 01 00 00 00 00 00 11	
+	; JAP	32
+	mRRETW	083h, 0C3h, 0A5h, 001h, 003h, 026h, 026h, 0A0h
+	mRRETW	026h, 006h, 025h, 025h, 063h, 063h, 000h, 084h
+
+SEND_PACKIT	; send packit(auto send the right one..)
+
+	clr		w
+	mov	VAR_TEMP,#16
+	cje		VAR_BIOS_REGION, #'A', :usa
+	cje		VAR_BIOS_REGION, #'E', :uk
+
+:jap	add		w,VAR_TEMP
+:uk	add		w,VAR_TEMP
+:usa
+	mov	VAR_TOFFSET, w			; save offset..
+	mDDIR	IO_CDDVD_BUS, #%00011000	; output but IO_BIOS_CS/IO_CDDVD_OE
+:loop1
+	mov	w, VAR_TOFFSET
+	call	PACKIT_BYTE
+	mov	IO_CDDVD_BUS, w
+:loop2
+	nop
+	jb	IO_CDDVD_OE, :loop2
+	inc	VAR_TOFFSET
+	decsz	VAR_PS2_BC
+	jmp	:loop1
+:loop3
+	jnb	IO_CDDVD_OE, :loop3
+	mDDIR	IO_CDDVD_BUS, #0FFh		; input
+	jmp	@MECHCON_BACK
+
+
+MECHACON_WAIT_OE
+	jnb	IO_CDDVD_OE,$			;only wait for contr. clock HI
+	nop
+	ret
+
+CDDVD_SKIP	; VAR_PS2_BSC = #er of bytes to skip
+:loop0
+	jb	IO_CDDVD_OE, :loop0	; wait for LOW
+	nop
+:loop1
+	jnb	IO_CDDVD_OE, :loop1	; wait for HI
+	djnz	VAR_PS2_BSC, :loop0	; next packit
+	ret
+
+CDDVD_PWAIT	; wait for F2 ... F2 ... F2 (CD/DVD univerzal)
+	mov	VAR_TEMP,#003h
+:loop0
+	jb	IO_CDDVD_OE, :loop0
+	cjne	IO_CDDVD_BUS, #0F2h, :loop0
+	call	MECHACON_WAIT_OE
+	jb	IO_CDDVD_OE, $
+	cjne	IO_CDDVD_BUS, #0F7h, :loop0
+	call	MECHACON_WAIT_OE
+	jb	IO_CDDVD_OE, $
+	cjne	IO_CDDVD_BUS, #0F7h, :loop0
+	call	MECHACON_WAIT_OE	
+	djnz	VAR_TEMP,:loop0
+	ret
+
+CDDVD_PATCH_DVD
+	call	CDDVD_PWAIT
+:loop0
+	jnb	IO_REST, @RESET_DOWN
+	jb	IO_CDDVD_OE, :loop0       
+:loopx
+	cjne	IO_CDDVD_BUS, #010h, :loop0	; 10
+	call	MECHACON_WAIT_OE
+
+:loop2
+	jb	IO_CDDVD_OE, :loop2
+	cjne	IO_CDDVD_BUS, #0F7h, :loop0
+:loop_w1
+	call	MECHACON_WAIT_OE
+:loop3
+	jb	IO_CDDVD_OE, :loop3
+	cjne	IO_CDDVD_BUS, #014h, :loop0
+	call	MECHACON_WAIT_OE
+
+	mov	VAR_PS2_BSC, #006h		; skip 5bytes
+	call	CDDVD_SKIP
+;:loop4
+;	jb	IO_CDDVD_OE, :loop4
+;	cjne	IO_CDDVD_BUS, #010h, :loop0
+;	call	MECHACON_WAIT_OE
+
+	mov	IO_CDDVD_BUS, #0A6h		; A6
+
+	mode	#$0F
+	mov	w, #%00011000
+
+:loop_oe_dvd1
+	jb	IO_CDDVD_OE,:loop_oe_dvd1
+	mov	!rb,w	
+
+:loop_oe_dvd2
+	jnb	IO_CDDVD_OE,:loop_oe_dvd2
+	
+	mode	#$0F
+	mov	w,#$FF
+	mov	!rb, w		;release bus
+
+:loop_oe2
+	jnb	IO_CDDVD_OE, :loop_oe2
+	
+:loop5
+	jb	IO_CDDVD_OE, :loop5     
+;	cjne	IO_CDDVD_BUS, #036h, :loopx
+	mov	VAR_TEMP,IO_CDDVD_BUS
+
+	cje	VAR_TEMP, #$36, :ok_byte1	;36h , correct byte ?
+	cje	VAR_TEMP, #$13, :loop_oe2	;skip if 13h
+	cje	VAR_TEMP, #$B6, :loop_oe2	;skip if B6h
+	cje	VAR_TEMP, #$10, :loop_oe2	;skip if 10h , but can be a sync byte !
+	cje	VAR_TEMP, #$F7, :loop_w1	;if byte= F7 then restart sync from 14h
+	jmp	:loop0
+:ok_byte1
+	call	MECHACON_WAIT_OE
+:loop6
+	jb	IO_CDDVD_OE, :loop6
+	cjne	IO_CDDVD_BUS, #032h, :loopx
+	mov	VAR_PS2_BC, #8
+	jmp	REG_SELECT
+
+
+CDDVD_PATCH_CD
+	call	CDDVD_PWAIT
+:loop0
+	jnb	IO_REST, @RESET_DOWN
+;	jb	IO_EJECT, @EX_WAIT		
+	jb	IO_CDDVD_OE, :loop0
+:loopx_cd
+	cjne	IO_CDDVD_BUS, #010h, :loop0
+	call	MECHACON_WAIT_OE
+:loop1
+	jb	IO_CDDVD_OE, :loop1
+	cjne	IO_CDDVD_BUS, #054h, :loop0
+	call	MECHACON_WAIT_OE
+:loop2
+	jb	IO_CDDVD_OE, :loop2
+	cjne	IO_CDDVD_BUS, #010h, :loop0
+	call	MECHACON_WAIT_OE
+
+	mov	VAR_PS2_BSC, #11			; skip 11bytes BIG LBA FIX 
+	call	CDDVD_SKIP			; /
+;:loop3
+;	jb	IO_CDDVD_OE, :loop3
+;	cjne	IO_CDDVD_BUS, #010h, :loop0
+;	call	MECHACON_WAIT_OE
+
+;	mov	VAR_PS2_BSC, #1			; skip 2bytes
+;	call	CDDVD_SKIP			; /
+;	nop
+	mov	IO_CDDVD_BUS, #084h
+
+	mode	#$0F
+	mov	w, #%00011000
+
+:loop_oe_cd1
+	jb	IO_CDDVD_OE,:loop_oe_cd1	;don't stress bus, patch only necessary time
+	mov	!rb, w
+:loop_oe_cd2
+	jnb	IO_CDDVD_OE,:loop_oe_cd2
+	mode	#$0F				;release bus
+	mov	w, #$FF
+	mov	!rb, w
+
+:loop4
+	jb	IO_CDDVD_OE, :loop4
+	cjne	IO_CDDVD_BUS, #034h, :loop0
+	mov	VAR_PS2_BC, #15
+
+REG_SELECT
+	call	CDDVD_PWAIT
+;	mov	VAR_PS2_BSC, #2			; skip 2bytes
+;	call	CDDVD_SKIP			; /
+	jmp	SEND_PACKIT			; send the cd/dvd packit
+
+ENDIF ; !NO BUS
+
+BIOS_OSDSYS_Vx
+IF PS2_BIOS & BIOS_XX
+        call	@E003_SYNC
+	jb	IO_BIOS_OE, $		; next byte / wait for bios OE low
+;	mov	IO_BIOS_DATA, #000h	; byte1 = #000h
+	jnb	IO_BIOS_OE, $		; wait for bios OE hi
+	mBIOS_SEND #000h, #000h, #000h
+	INCLUDE ".\obj\osdsys_vx.inc"	; r5900 code
+	mDDIR	IO_BIOS_DATA, #0FFh	; port=input
+ENDIF
+	jmp	@PS2_PATCH_2	; here to be safe
+	
+org $7FF					; Reset Vector
+	jmp	0000h
+
