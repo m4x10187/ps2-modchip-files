@@ -1,0 +1,21 @@
+NEO4 - Signals
+
+Pins 1-11 are Address Lines 
+Pins 12-20 are Data Lines 
+Pin 21 is Chip Enable for the PS2 ROM 
+Pins 22-32 are Address Lines 
+Pin 33 is the PS2 Chip Enable signal 
+
+Pin 34 is SCEE Management (SCEX Signal) 
+Pin 35 is Clock Signal 
+Pin 36 is +5 Volt 
+Pin 37 is Earth (Ground) 
+Pin 38 is BA Pin2 (tray direction open / close) 
+Pin 39 is BA Pin1 (tray direction open / close) 
+Pin 40 is Eject Detect 
+Pin 41 is Tray-Motor Enable 
+Pin 42 is Macrovision 1 
+Pin 43 is Macrovision 2 
+Pin 44 is PS2 Output Enable 
+
+Downloaded from www.electronicommunity.com
