@@ -1,0 +1,34 @@
+ Cracking / Guarding SXs
+
+Its almost always harder to break copy protection on a microcontroller (and/or more expensive) than just hiring a programmer to duplicate the function of the original...
+
+...and then its legal. <GRIN>
+
+SxPilot450 says:
+
+    Recently, I was investigating the security of the SX28 device from Ubicom. I admired the floor plan of the layout where-as there was a ram and a flash area to the left with pure-logic all over on the right (no sign of microcode anywhere unlike a PIC).
+
+    While the security/config fuses were no so obvious without de-layering, I found that by simply focusing light over the fuse area, you can dump any locked SX device!
+
+    In order to do this, the attacker must know how to open your chip up which is tedious. Once opened, the attacker needs to only focus a halogen lamp into the corner of the die. Leaving the light on, he tells the device to read out. 3 of 5 reads will result in the true code of the SX device!@!#@!
+
+    This is normal LOW halogen output coming down through the objective onto the die. The fuses are protected by M3's metal planes so the light is not affecting the actual cell itself.
+
+    This is an unacceptable result. Most chips act funny under high intensity light from your objective and you can turn the light down and all is well. In this case, the chip unlocks itself and returns the correct user-code from inside if you just put a dimmed light source in the corner of the die! 
+
+Coriolis says:
+
+    This phenomenon exists with any microcontroller using a fuse to protect code where a blown state (ie protected) is represented by a depleted gate. The light causes the formation of hole-electron pairs, and one of the two moves into the silicon while the other stays near the surface. This causes a depletion and accumulation region within the polysilicon gate and can turn on the transistor. All silicon transistor exhibit this behaviour, each acts like a weak phototransistor when exposed to light. 
+
+Paul says:
+
+    It is possible that a transistor connected to the fuse subcircuit but not protected by the metal 3 layer is causing this problem, if the logic which drives the security setting signal is being thrown into an artificial state, the fuse could be bypassed. If this were the case then it would fall into the "unanticipated design flaw" catagory. 
+
+Also:
+
+    Cracking / Guarding PICs 
+
+	
+	
+	
+	http://www.piclist.com/techref/scenix/crack.htm
