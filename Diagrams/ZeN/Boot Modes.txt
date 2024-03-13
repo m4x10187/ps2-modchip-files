@@ -1,0 +1,11 @@
+[IriDiuM_ZeN]
+
+Istructions:
+
+Normal Mode(AUTOBOOT Ps2-Ps1-DvdVideo): turn-on the console and insert the disc.
+
+DEV.Mode (boot applicaton from MC0\BOOT\BOOT.ELF): press TRIANGLE button of joypad in the main menu of browser .
+
+Ps1 mode (ps1 & dvd-film): turn-on the console with a long pression of RESET button (about 2sec.)
+
+SLEEP.mode (chip disabled): turn-on the console with a very long pression of RESET button (about 4sec.);
