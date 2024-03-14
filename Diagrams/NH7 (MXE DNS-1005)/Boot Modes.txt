@@ -1,0 +1,14 @@
+The MXE/NH7 allows you to boot any PS2 or PS1 Import and Backup Game (CD-r, DVD-r) without swap method and without the help of an Action Replay 2 or Gameshark 2. Imagine playing all of your favorite PS2 Import Games and CD-R, DVD-R Backups without any required swaps whatsoever.
+
+Direct Boot of all PS2 Import and Backup Games!
+Direct Boot of all PS1 Import and Backup Games!
+No Swapping required!
+No Game Shark2 or Action Replay2 required!
+100% compatible with all games!
+
+How to Run PS2 disc:
+When using PS2 original, PS2 DVD thick disk, PS2 DVD thin disk, and PS2 CDR game disk:
+Insert game disk, then press RESET once.
+
+How to Run PS1 and DVD Movie:
+Insert game disk or DVD movie, turn off the PS2 console to Stand By mode, then press RESET until turn on the PS2 console and the image of the disk will appear on the screen.
