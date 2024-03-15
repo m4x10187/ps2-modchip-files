@@ -1,0 +1,33 @@
+Operating Instructions
+
+To switch between PS2 and PSX mode will require a hard reset to switch off the PS2. (ie hold RESET button for more than 2 seconds to switch off the machine.
+
+
+
+It is assumed that your machine is in the Standby mode, ie machine is not switched on
+
+PS2 games
+
+-Press EJECT button to switch on the machine.
+
+-Insert PS2 game in tray, then press EJECT button to close tray.
+
+-Once the tray closes fully, press/tap the RESET button once to load game.
+
+DVD movies
+
+-Press EJECT button to switch on the machine.
+
+-Insert DVD movie in tray, then press and hold RESET button to switch off machine.
+
+-Now hold the RESET button to start up your machine. Only release the RESET button once the Blue LED light of the Eject button lights up
+
+PSX games
+
+-Press EJECT button to switch on the machine.
+
+-Insert PSX game in tray, then press and hold RESET button to switch off machine.
+
+-Now hold the RESET button to start up your machine. Only release the RESET button once the Blue LED light of the Eject button lights up
+
+(If it shows the PSX game as an audio cd. This means that you didn't hold the RESET button long enough. So repeat PSX loading instructions but hold the RESET button longer this time round when booting the machine)
