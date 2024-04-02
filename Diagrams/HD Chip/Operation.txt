@@ -1,0 +1,31 @@
+It is necessary to press the "reset" button to switch off the machine before starting the PS2 and PSX modes (ie must press the "reset" button for more than 2 seconds before switching off the machine).
+
+Assuming that the machine is in standby mode so that ie does not have to be switched on.
+
+PS2 games
+
+-Press the "EJECT" button to switch on the machine.
+
+-Put the PS2 game on the tray.
+
+-Tap the RESET button once and the PS2 will restart and load your games.
+
+DVD VIDEO
+
+-Press the EJECT button to turn on the machine.
+
+-Insert the DVD video into the tray, then press the RESET button until it shuts down.
+
+-Now press the "RESET" button to start the machine. Just release the RESET button until the blue light on the Eject button lights up.
+
+PSX Games
+
+-Press the EJECT button to switch on the machine.
+
+-Put the PSX game on the tray and press the RESET button to switch off the machine.
+
+-Now press the "RESET" button to start the machine. Just release the RESET button and the blue light on the Eject button will light up.
+
+Disable chip
+
+Translated with DeepL.com (free version)
