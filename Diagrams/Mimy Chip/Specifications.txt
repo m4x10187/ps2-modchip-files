@@ -1,0 +1,20 @@
+Improvements over code magic3.1- loading from browser screen - FAST LOADING - 100% boot rate with DVD9 format.
+▪ Loads all Backup and Import copies directly.
+▪ Cycles without swap as per original console..
+▪ Direct boot for backup copies of DVD movies.
+▪ Direct boot of ripped DVDs
+▪ Direct Boot of Original PS1 Games Import and Backup.
+▪ Multi Disk - DVD9 - and Gameshark2 compatible.
+▪ Direct Boot of Original Ps2 games Import CDs and DVDs.
+▪ Direct Boot of PS2 Backup games (CD and DVD)
+▪ Direct Boot of EA sports Backups without patches.
+▪ Direct Boot of Original Import EA sports
+▪ Fully tested and compatible with Network Adapter and online play.
+▪ Full support for Gamshark2 and Action Replay 2.
+▪ Full support and functionality for all types of consoles including foreign consoles.
+▪ Compatible with NTSC - PAL , USA/EUR/JAP consoles.
+▪ Auto detect region and Console Version.
+▪ Multi safe system design - new system to safeguard the life of PS2 console .
+▪ Use of DVD player mode and all original features remain unchanged of the PS2 - boot procedures are not necessary with the chip off.
+▪ The chip is compatible with the following console versions 5, 6, 7,8, 9,10* (3000x -5000x).
+*Consoles v10 require a proprietary chip version that works only that type of console.

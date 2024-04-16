@@ -1,0 +1,7 @@
+- Prepared for dual-power supply (greater stability and reliability).
+- Compatibile with V9/V10 only.
+- Low-cost.
+- Allows booting of all PS2 games (reads CD/DVD/DVD-9/CD-R/DVD-RW discs).
+- Supports swap trick.
+- Only 19 wires.
+- Macrovision and green-screen removal.
